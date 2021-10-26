@@ -27,9 +27,6 @@ namespace Okta.Sdk
         /// <summary>The ENROLLED FactorStatus.</summary>
         public static FactorStatus Enrolled = new FactorStatus("ENROLLED");
 
-        /// <summary>The DISABLED FactorStatus.</summary>
-        public static FactorStatus Disabled = new FactorStatus("DISABLED");
-
         /// <summary>The EXPIRED FactorStatus.</summary>
         public static FactorStatus Expired = new FactorStatus("EXPIRED");
 

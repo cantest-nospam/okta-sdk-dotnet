@@ -80,6 +80,11 @@ namespace Okta.Sdk
             => GetClient().Users.AssignRoleToUserAsync(assignRoleRequest, Id, disableNotifications, cancellationToken);
         
         /// <inheritdoc />
+        public Task<IRole> GetRoleAsync(
+            string roleId, CancellationToken cancellationToken = default(CancellationToken))
+            => GetClient().Users.GetUserRoleAsync(Id, roleId, cancellationToken);
+        
+        /// <inheritdoc />
         public Task RemoveRoleAsync(
             string roleId, CancellationToken cancellationToken = default(CancellationToken))
             => GetClient().Users.RemoveRoleFromUserAsync(Id, roleId, cancellationToken);
