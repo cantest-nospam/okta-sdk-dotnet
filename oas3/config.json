@@ -1,0 +1,7 @@
+{
+	"packageName" : "Okta.Sdk",
+	"packageVersion" : "6.0.0",
+	"optionalProjectFile" : "false",
+	"targetFramework" : "v5.0"
+	
+}

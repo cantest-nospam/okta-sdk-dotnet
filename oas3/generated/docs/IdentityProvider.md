@@ -1,0 +1,18 @@
+# Okta.Sdk.Model.IdentityProvider
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Links** | **Dictionary&lt;string, Object&gt;** |  | [optional] 
+**Created** | **DateTime?** |  | [optional] 
+**Id** | **string** |  | [optional] 
+**IssuerMode** | **IssuerMode** |  | [optional] 
+**LastUpdated** | **DateTime?** |  | [optional] 
+**Name** | **string** |  | [optional] 
+**Policy** | [**IdentityProviderPolicy**](IdentityProviderPolicy.md) |  | [optional] 
+**Protocol** | [**Protocol**](Protocol.md) |  | [optional] 
+**Status** | **LifecycleStatus** |  | [optional] 
+**Type** | **string** |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+

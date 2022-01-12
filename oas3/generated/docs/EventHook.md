@@ -1,0 +1,18 @@
+# Okta.Sdk.Model.EventHook
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**Links** | **Dictionary&lt;string, Object&gt;** |  | [optional] 
+**Channel** | [**EventHookChannel**](EventHookChannel.md) |  | [optional] 
+**Created** | **DateTime?** |  | [optional] 
+**CreatedBy** | **string** |  | [optional] 
+**Events** | [**EventSubscriptions**](EventSubscriptions.md) |  | [optional] 
+**Id** | **string** |  | [optional] 
+**LastUpdated** | **DateTime?** |  | [optional] 
+**Name** | **string** |  | [optional] 
+**Status** | **LifecycleStatus** |  | [optional] 
+**VerificationStatus** | **EventHookVerificationStatus** |  | [optional] 
+
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
