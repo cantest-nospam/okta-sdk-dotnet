@@ -36,6 +36,8 @@ namespace Okta.Sdk
     {
         private readonly IDataStore _dataStore;
         private readonly RequestContext _requestContext;
+        private readonly ILogger _logger;
+        private readonly ISerializer _serializer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OktaClient"/> class.
@@ -55,24 +57,24 @@ namespace Okta.Sdk
             Configuration = GetConfigurationOrDefault(apiClientConfiguration);
             OktaClientConfigurationValidator.Validate(Configuration, oAuthTokenProvider != default);
 
-            logger = logger ?? NullLogger.Instance;
-            serializer = serializer ?? new DefaultSerializer();
-            var resourceFactory = new ResourceFactory(this, logger);
+            _logger = logger ?? NullLogger.Instance;
+            _serializer = serializer ?? new DefaultSerializer();
+            var resourceFactory = new ResourceFactory(this, _logger);
 
             var defaultHttpClient = httpClient ??
                                     DefaultHttpClient.Create(
                                         Configuration.ConnectionTimeout,
                                         Configuration.Proxy,
-                                        logger);
+                                        _logger);
 
-            var tokenProvider = GetTokenProvider(Configuration, logger, resourceFactory, oAuthTokenProvider);
-            var requestExecutor = new DefaultRequestExecutor(Configuration, defaultHttpClient, logger, retryStrategy, tokenProvider);
+            var tokenProvider = GetTokenProvider(Configuration, _logger, resourceFactory, oAuthTokenProvider);
+            var requestExecutor = new DefaultRequestExecutor(Configuration, defaultHttpClient, _logger, retryStrategy, tokenProvider);
 
             _dataStore = new DefaultDataStore(
                 requestExecutor,
-                serializer,
+                _serializer,
                 resourceFactory,
-                logger);
+                _logger);
 
             PayloadHandler.TryRegister<PkixCertPayloadHandler>();
             PayloadHandler.TryRegister<PemFilePayloadHandler>();
@@ -108,7 +110,7 @@ namespace Okta.Sdk
                 case AuthorizationMode.BearerToken:
                     return new DefaultBearerTokenProvider(configuration.BearerToken, customTokenProvider);
                 default:
-                    throw new ArgumentException($"Token provider is not implemented for AuthorizationMode={configuration.AuthorizationMode}", nameof(configuration));
+                    return NullOAuthTokenProvider.Instance;
             }
         }
 
@@ -177,7 +179,17 @@ namespace Okta.Sdk
 
         /// <inheritdoc/>
         public IOktaClient CreateScoped(RequestContext requestContext)
-            => new OktaClient(_dataStore, Configuration, requestContext);
+        {
+            if (!string.IsNullOrEmpty(requestContext.AccessToken))
+            {
+                var configuration = Configuration.DeepClone();
+                configuration.AuthorizationMode = AuthorizationMode.BearerToken;
+                // MyAccount flow
+                return new OktaClient(configuration, _logger, _serializer, new MyAccountTokenProvider(requestContext.AccessToken));
+            }
+
+            return new OktaClient(_dataStore, Configuration, requestContext);
+        }
 
         /// <inheritdoc/>
         public IBrandsClient Brands => new BrandsClient(_dataStore, Configuration, _requestContext);
@@ -256,6 +268,9 @@ namespace Okta.Sdk
 
         /// <inheritdoc/>
         public ISubscriptionsClient Subscriptions => new SubscriptionsClient(_dataStore, Configuration, _requestContext);
+
+        /// <inheritdoc/>
+        public IMyAccountsClient MyAccounts => new MyAccountsClient(_dataStore, Configuration, _requestContext);
 
         /// <summary>
         /// Creates a new <see cref="CollectionClient{T}"/> given an initial HTTP request.

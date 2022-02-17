@@ -78,6 +78,11 @@ namespace Okta.Sdk
         public string ContentType { get; set; }
 
         /// <summary>
+        /// Gets or sets the Access Token
+        /// </summary>
+        internal string AccessToken { get; set; }
+
+        /// <summary>
         /// Clone the current request context.
         /// </summary>
         /// <returns>A clone of the current request context.</returns>

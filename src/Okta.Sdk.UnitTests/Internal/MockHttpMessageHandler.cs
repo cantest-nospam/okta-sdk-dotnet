@@ -5,6 +5,7 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace Okta.Sdk.UnitTests.Internal
     {
         private readonly string _returnThis;
         private readonly HttpStatusCode _statusCode;
+
+        public HttpRequestHeaders ReceivedHeaders { get; private set; }
 
         public int NumberOfCalls { get; private set; }
 
@@ -26,7 +29,7 @@ namespace Okta.Sdk.UnitTests.Internal
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             NumberOfCalls++;
-
+            ReceivedHeaders = request.Headers;
             return new HttpResponseMessage
             {
                 StatusCode = _statusCode,

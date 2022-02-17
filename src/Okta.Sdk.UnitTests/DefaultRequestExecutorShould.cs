@@ -87,6 +87,30 @@ namespace Okta.Sdk.UnitTests
             requestMessageHandler.NumberOfCalls.Should().Be(1);
         }
 
+        [Fact]
+        public async Task UseProvidedAccessTokenForMyAccount()
+        {
+            var requestMessageHandler = new MockHttpMessageHandler(string.Empty, HttpStatusCode.OK);
+            var httpClientRequest = new HttpClient(requestMessageHandler);
+
+            var configuration = new OktaClientConfiguration();
+            configuration.OktaDomain = "https://myOktaDomain.oktapreview.com";
+
+            var oktaClient = new OktaClient(configuration);
+            var logger = Substitute.For<ILogger>();
+
+            var resourceFactory = new ResourceFactory(oktaClient, logger);
+            var tokenProvider = new MyAccountTokenProvider("myAccountToken");
+
+            var requestExecutor = new DefaultRequestExecutor(configuration, httpClientRequest, logger, new NoRetryStrategy(), tokenProvider);
+
+            var response = await requestExecutor.GetAsync("foo", null, default(CancellationToken));
+
+            response.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            requestMessageHandler.ReceivedHeaders.Authorization.Parameter.Should().Be("myAccountToken");
+            requestMessageHandler.ReceivedHeaders.Authorization.Scheme.Should().Be("Bearer");
+        }
+
         [Theory]
         [InlineData(HttpVerb.Get)]
         [InlineData(HttpVerb.Post)]
