@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Okta.Sdk
 {
     /// <inheritdoc cref="Policy"/>
-    public class Policy
+    public partial class Policy
     {
         /// <inheritdoc/>
         public async Task<T> GetPolicyRuleAsync<T>(string ruleId, CancellationToken cancellationToken = default(CancellationToken))
